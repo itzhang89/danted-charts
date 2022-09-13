@@ -33,6 +33,9 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag}}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command:
+            - sh
+            - /home/danted/script/startup.sh
           ports:
             - name: ss5
               containerPort: 2020
@@ -49,6 +52,14 @@ spec:
             periodSeconds: 10
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+          volumeMounts:
+            - mountPath: /home/danted/script/startup.sh
+              name: configmap
+              subPath: startup.sh
+      volumes:
+        - name: configmap
+          configMap:
+            name: {{ include "danted.fullname" . }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

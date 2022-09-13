@@ -9,6 +9,11 @@
   export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ include "danted.fullname" . }})
   export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
   echo http://$NODE_IP:$NODE_PORT
+  # verify the ss5
+  {{- with (index .Values.env.auth 0) }}
+  curl -x socks5://$NODE_IP:$NODE_PORT https://checkip.amazonaws.com -U {{ .user }}:{{ .pass }}
+  {{- end }}
+
 {{- else if contains "LoadBalancer" .Values.service.type }}
      NOTE: It may take a few minutes for the LoadBalancer IP to be available.
            You can watch the status of by running 'kubectl get --namespace {{ .Release.Namespace }} svc -w {{ include "danted.fullname" . }}'

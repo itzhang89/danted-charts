@@ -36,6 +36,11 @@ securityContext: {}
   # runAsNonRoot: true
   # runAsUser: 1000
 
+env:
+  auth:
+    - user: "sockd"
+      pass: "sockd"
+
 service:
   type: NodePort
   port: 2020

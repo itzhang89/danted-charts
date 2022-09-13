@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "danted.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "danted.name" . }}
+    {{- include "danted.labels" . | nindent 4 }}
+data:
+  startup.sh: |-
+    #!/bin/sh
+
+    set -x
+
+    script/pam del sockd
+    {{ range .Values.env.auth }}
+    script/pam add {{ .user }} {{ .pass }}
+    {{ end }}
+
+    sbin/sockd -N 4
