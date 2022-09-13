@@ -1,16 +1,16 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "danted-charts.fullname" . }}
+  name: {{ include "danted.fullname" . }}
   labels:
-    {{- include "danted-charts.labels" . | nindent 4 }}
+    {{- include "danted.labels" . | nindent 4 }}
 spec:
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
   {{- end }}
   selector:
     matchLabels:
-      {{- include "danted-charts.selectorLabels" . | nindent 6 }}
+      {{- include "danted.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       {{- with .Values.podAnnotations }}
@@ -18,13 +18,13 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
-        {{- include "danted-charts.selectorLabels" . | nindent 8 }}
+        {{- include "danted.selectorLabels" . | nindent 8 }}
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      serviceAccountName: {{ include "danted-charts.serviceAccountName" . }}
+      serviceAccountName: {{ include "danted.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
